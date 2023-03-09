@@ -94,7 +94,7 @@ func putQbittorrentPort(path string, username string, password string, port stri
 	if err != nil {
 		return
 	}
-	fmt.Printf("port changed to %s\n", port)
+	log.Printf("port changed to %s\n", port)
 	defer resp.Body.Close()
 
 	u.Path = "api/v2/auth/logout"
@@ -122,6 +122,8 @@ func queryPort(ip string, port string) (err error) {
 }
 
 func main() {
+	log.SetFlags(log.LstdFlags)
+
 	gluetunPath := os.Getenv("GLUETUN_PATH")
 	qbittorrentPort := os.Getenv("QBITTORRENT_PORT")
 	qbittorrentPath := os.Getenv("QBITTORRENT_PATH")
@@ -150,17 +152,17 @@ func main() {
 		if err == nil {
 			continue
 		}
-		fmt.Println(err)
+		log.Println(err)
 
 		err = putQbittorrentPort(qbittorrentPath, qbittorrentUsername, qbittorrentPassword, "0")
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			continue
 		}
 
 		err = putQbittorrentPort(qbittorrentPath, qbittorrentUsername, qbittorrentPassword, qbittorrentPort)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			continue
 		}
 	}
