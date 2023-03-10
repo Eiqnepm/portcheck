@@ -22,8 +22,6 @@
         FIREWALL_VPN_INPUT_PORTS: "6881"
       image: "qmcgaw/gluetun:latest"
       ports:
-        # Gluetun
-        - "8000:8000"
         # qBittorrent
         - "8080:8080"
       restart: "always"
