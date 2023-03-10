@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"net"
 	"net/http"
@@ -15,45 +13,19 @@ import (
 	"time"
 )
 
-type publicIpResponse struct {
-	PublicIp string `json:"public_ip"`
-}
-
-func getPublicIp(path string) (ip string, err error) {
-	u, err := url.Parse(path)
+func getOutboundIP() (ip string, err error) {
+	conn, err := net.Dial("udp", "255.255.255.255:0")
 	if err != nil {
 		return
 	}
+	defer conn.Close()
 
-	u.Path = "v1/publicip/ip"
-
-	resp, err := http.Get(u.String())
-	if err != nil {
-		return
-	}
-
-	defer resp.Body.Close()
-
-	bytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return
-	}
-
-	data := publicIpResponse{}
-	json.Unmarshal(bytes, &data)
-
-	ip = data.PublicIp
-	if ip == "" {
-		err = errors.New("no public ip")
-	}
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+	ip = localAddr.IP.String()
 	return
 }
 
-func putQbittorrentPort(path string, username string, password string, port string) (err error) {
-	u, err := url.Parse(path)
-	if err != nil {
-		return
-	}
+func putQbittorrentPort(u url.URL, username string, password string, port string) (err error) {
 	u.Path = "api/v2/auth/login"
 
 	jar, err := cookiejar.New(nil)
@@ -132,11 +104,15 @@ func env(key string, defaultValue string) (value string) {
 func main() {
 	log.SetFlags(log.LstdFlags)
 
-	gluetunPath := os.Getenv("GLUETUN_PATH")
-	qbittorrentPort := env("QBITTORRENT_PORT", "6881")
-	qbittorrentPath := os.Getenv("QBITTORRENT_PATH")
-	qbittorrentUsername := env("QBITTORRENT_USERNAME", "admin")
-	qbittorrentPassword := env("QBITTORRENT_PASSWORD", "adminadmin")
+	qbitPort := env("QBITTORRENT_PORT", "6881")
+	qbitWebPort := env("QBITTORRENT_WEBUI_PORT", "8080")
+	qbitScheme := env("QBITTORRENT_WEBUI_SCHEME", "http")
+	qbitUrl := url.URL{
+		Scheme: qbitScheme,
+		Host:   net.JoinHostPort("localhost", qbitWebPort),
+	}
+	qbitUsername := env("QBITTORRENT_USERNAME", "admin")
+	qbitPassword := env("QBITTORRENT_PASSWORD", "adminadmin")
 	t, err := strconv.Atoi(env("TIMEOUT", "300"))
 	if err != nil {
 		log.Fatal(err)
@@ -150,25 +126,25 @@ func main() {
 		}
 		firstLoop = false
 
-		publicIp, err := getPublicIp(gluetunPath)
+		outboundIp, err := getOutboundIP()
 		if err != nil {
 			log.Println(err)
 			continue
 		}
 
-		err = queryPort(publicIp, qbittorrentPort)
+		err = queryPort(outboundIp, qbitPort)
 		if err == nil {
 			continue
 		}
 		log.Println(err)
 
-		err = putQbittorrentPort(qbittorrentPath, qbittorrentUsername, qbittorrentPassword, "0")
+		err = putQbittorrentPort(qbitUrl, qbitUsername, qbitPassword, "0")
 		if err != nil {
 			log.Println(err)
 			continue
 		}
 
-		err = putQbittorrentPort(qbittorrentPath, qbittorrentUsername, qbittorrentPassword, qbittorrentPort)
+		err = putQbittorrentPort(qbitUrl, qbitUsername, qbitPassword, qbitPort)
 		if err != nil {
 			log.Println(err)
 			continue
