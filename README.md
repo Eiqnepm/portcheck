@@ -68,7 +68,7 @@
 |Variable|Default|Description|
 |-|-|-|
 |`QBITTORRENT_PORT`|`6881`|qBittorrent incoming connection port|
-|`QBITTORRENT_WEBUI_PORT`||Port of the qBittorrent WebUI|
+|`QBITTORRENT_WEBUI_PORT`|`8080`|Port of the qBittorrent WebUI|
 |`QBITTORRENT_WEBUI_SCHEME`|`http`|Scheme of the qBittorrent WebUI|
 |`QBITTORRENT_USERNAME`|`admin`|qBittorrent WebUI username|
 |`QBITTORRENT_PASSWORD`|`adminadmin`|qBittorrent WebUI password|
