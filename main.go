@@ -121,15 +121,23 @@ func queryPort(ip string, port string) (err error) {
 	return errors.New("port closed")
 }
 
+func env(key string, defaultValue string) (value string) {
+	value = os.Getenv(key)
+	if value == "" {
+		value = defaultValue
+	}
+	return
+}
+
 func main() {
 	log.SetFlags(log.LstdFlags)
 
 	gluetunPath := os.Getenv("GLUETUN_PATH")
-	qbittorrentPort := os.Getenv("QBITTORRENT_PORT")
+	qbittorrentPort := env("QBITTORRENT_PORT", "6881")
 	qbittorrentPath := os.Getenv("QBITTORRENT_PATH")
-	qbittorrentUsername := os.Getenv("QBITTORRENT_USERNAME")
-	qbittorrentPassword := os.Getenv("QBITTORRENT_PASSWORD")
-	t, err := strconv.Atoi(os.Getenv("TIMEOUT"))
+	qbittorrentUsername := env("QBITTORRENT_USERNAME", "admin")
+	qbittorrentPassword := env("QBITTORRENT_PASSWORD", "adminadmin")
+	t, err := strconv.Atoi(env("TIMEOUT", "300"))
 	if err != nil {
 		log.Fatal(err)
 	}
