@@ -52,13 +52,14 @@
         - "gluetun"
         - "qbittorrent"
       environment:
-        GLUETUN_PATH: "http://192.168.1.255:8000"
         QBITTORRENT_PORT: "6881"
-        QBITTORRENT_PATH: "http://192.168.1.255:8080"
+        QBITTORRENT_WEBUI_PORT: "8080"
+        QBITTORRENT_WEBUI_SCHEME: "http"
         QBITTORRENT_USERNAME: "admin"
         QBITTORRENT_PASSWORD: "adminadmin"
         TIMEOUT: "300"
       image: "eiqnepm/portcheck:latest"
+      network_mode: "service:gluetun"
       restart: "always"
   ```
 </details>
@@ -66,9 +67,9 @@
 ## Environment variables
 |Variable|Default|Description|
 |-|-|-|
-|`GLUETUN_PATH`||URI of the Gluetun HTTP control server|
 |`QBITTORRENT_PORT`|`6881`|qBittorrent incoming connection port|
-|`QBITTORRENT_PATH`||URI of the qBittorrent Web UI|
-|`QBITTORRENT_USERNAME`|`admin`|qBittorrent Web UI username|
-|`QBITTORRENT_PASSWORD`|`adminadmin`|qBittorrent Web UI password|
+|`QBITTORRENT_WEBUI_PORT`||Port of the qBittorrent WebUI|
+|`QBITTORRENT_WEBUI_SCHEME`|`http`|Scheme of the qBittorrent WebUI|
+|`QBITTORRENT_USERNAME`|`admin`|qBittorrent WebUI username|
+|`QBITTORRENT_PASSWORD`|`adminadmin`|qBittorrent WebUI password|
 |`TIMEOUT`|`300`|Time in seconds between each port check|
