@@ -1,21 +1,15 @@
-FROM alpine:3.17 AS build
+FROM golang:1.20.2-alpine3.17 AS build
 
-RUN apk update
-RUN apk upgrade
-RUN apk add --update go
-
-WORKDIR /app
+WORKDIR /usr/src/portcheck
 
 COPY go.mod ./
-COPY cmd ./cmd
 COPY internal ./internal
+COPY cmd ./cmd
 
-RUN go build -o /portcheck cmd/portcheck/main.go
+RUN go build -o /usr/local/bin/portcheck cmd/portcheck/main.go
 
 FROM alpine:3.17
 
-WORKDIR /
-
-COPY --from=build /portcheck /portcheck
+COPY --from=build /usr/local/bin/portcheck /portcheck
 
 CMD ["/portcheck"]
