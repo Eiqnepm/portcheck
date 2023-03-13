@@ -67,7 +67,7 @@ func main() {
 		log.Println(err)
 
 		func() {
-			err = qbit.Login(qbitUrl, qbitUsername, qbitPassword)
+			err := qbit.Login(qbitUrl, qbitUsername, qbitPassword)
 			if err != nil {
 				log.Println(err)
 				return
