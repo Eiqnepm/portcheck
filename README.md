@@ -56,6 +56,7 @@
         QBITTORRENT_USERNAME: "admin"
         QBITTORRENT_PASSWORD: "adminadmin"
         TIMEOUT: "300"
+        DIAL_TIMEOUT: "5"
       image: "eiqnepm/portcheck:latest"
       network_mode: "service:gluetun"
       restart: "always"
@@ -71,3 +72,4 @@
 |`QBITTORRENT_USERNAME`|`admin`|qBittorrent WebUI username|
 |`QBITTORRENT_PASSWORD`|`adminadmin`|qBittorrent WebUI password|
 |`TIMEOUT`|`300`|Time in seconds between each port check|
+|`DIAL_TIMEOUT`|`5`|Time in seconds before the port check is considered incomplete|
