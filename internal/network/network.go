@@ -1,7 +1,6 @@
 package network
 
 import (
-	"errors"
 	"log"
 	"net"
 	"strconv"
@@ -29,10 +28,6 @@ func QueryPort(ip string, port int, timeout time.Duration) (err error) {
 	conn, err := net.DialTimeout("tcp", net.JoinHostPort(ip, strconv.Itoa(port)), timeout)
 	if err != nil {
 		return
-	}
-
-	if conn == nil {
-		return errors.New("port closed")
 	}
 
 	e := conn.Close()
