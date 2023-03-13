@@ -66,27 +66,30 @@ func main() {
 		}
 		log.Println(err)
 
-		err = qbit.Login(qbitUrl, qbitUsername, qbitPassword)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
+		func() {
+			err = qbit.Login(qbitUrl, qbitUsername, qbitPassword)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			defer func() {
+				err := qbit.Logout()
+				if err != nil {
+					log.Println(err)
+				}
+			}()
 
-		err = qbit.SetPreference("listen_port", 0)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
+			err = qbit.SetPreference("listen_port", 0)
+			if err != nil {
+				log.Println(err)
+				return
+			}
 
-		err = qbit.SetPreference("listen_port", qbitPort)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-
-		err = qbit.Logout()
-		if err != nil {
-			log.Println(err)
-		}
+			err = qbit.SetPreference("listen_port", qbitPort)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+		}()
 	}
 }
