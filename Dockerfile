@@ -7,9 +7,10 @@ RUN apk add --update go
 WORKDIR /app
 
 COPY go.mod ./
-COPY main.go ./
+COPY cmd ./cmd
+COPY internal ./internal
 
-RUN go build -o /portcheck
+RUN go build -o /portcheck cmd/portcheck/main.go
 
 FROM alpine:3.17
 
