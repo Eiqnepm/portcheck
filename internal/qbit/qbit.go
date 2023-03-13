@@ -92,7 +92,7 @@ func SetPreference(preference string, value any) (err error) {
 	}(resp.Body)
 
 	if resp.StatusCode == 200 {
-        log.Println(string(j))
+		log.Println(string(j))
 		return
 	}
 
